@@ -1,0 +1,18 @@
+{
+  "validLogins": [
+    {
+      "username": "uvden8wx6@mozmail.com",
+      "password": "xyz@123"
+    }
+  ],
+  "invalidLogins": [
+    {
+      "username": "invalid.user@opencart.com",
+      "password": "WrongPassword123"
+    },
+    {
+      "username": "another.invalid@opencart.com",
+      "password": "password1234"
+    }
+  ]
+}
