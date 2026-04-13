@@ -25,3 +25,11 @@
   - `src/test/java/tests/ValidLoginTest.java`: Hooked up the JSON DataProvider, stripped checked exceptions, and updated assertion logic to utilize `OpenCartMyAccountPage`.
   - `src/test/java/tests/InvalidLoginTest.java`: Hooked up the JSON DataProvider and stripped checked exceptions.
   - `README.md`: Produced comprehensive framework documentation.
+
+## GitHub Community Standards
+- **Objective:** Introduce structured contribution guidelines and pull request templates.
+- **Files Added:**
+  - `CONTRIBUTING.md`: Base guidelines for open-source and team contributions.
+  - `.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE.md`: Standardized bug and feature requests.
+  - `.github/PULL_REQUEST_TEMPLATE.md`: Template for PR motivation and changes.
+  - `.github/REVIEWER_CHECKLIST.md`: Verification checklist for PR reviewers.
