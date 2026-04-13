@@ -24,9 +24,9 @@ public class InvalidLoginTest {
         loginPage = new OpenCartLoginPage(driver);
     }
 
-    @Test
-    public void testInvalidCredentials() throws Exception {
-        loginPage.doLogin(ConfigReader.getProperty("invalid.username"), ConfigReader.getProperty("invalid.password"));
+    @Test(dataProvider = "invalidLoginData", dataProviderClass = utils.TestDataUtils.class)
+    public void testInvalidCredentials(String username, String password) {
+        loginPage.doLogin(username, password);
         
         String actualErrorMsg = loginPage.getErrorMessage();
         String expectedErrorMsg = "Warning: No match for E-Mail Address and/or Password.";
