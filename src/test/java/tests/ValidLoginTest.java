@@ -10,7 +10,14 @@ import org.testng.annotations.Test;
 import factory.DriverFactory;
 import pages.OpenCartLoginPage;
 import utils.ConfigReader;
-
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+@Epic("OpenCart Automation")
+@Feature("Login functionality")
 public class ValidLoginTest {
 
     private WebDriver driver;
@@ -25,6 +32,9 @@ public class ValidLoginTest {
     }
 
     @Test(dataProvider = "validLoginData", dataProviderClass = utils.TestDataUtils.class)
+    @Story("Valid Login Story")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that the user can login with valid credentials")
     public void testValidCredentials(String username, String password) {
         pages.OpenCartMyAccountPage myAccountPage = loginPage.doLogin(username, password);
         

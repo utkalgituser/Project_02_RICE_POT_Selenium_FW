@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import io.qameta.allure.Step;
 
 public class OpenCartMyAccountPage {
 
@@ -23,6 +24,7 @@ public class OpenCartMyAccountPage {
         PageFactory.initElements(driver, this);
     }
 
+    @Step("Verify if My Orders heading is displayed")
     public boolean isMyOrdersHeadingDisplayed() {
         try {
             return wait.until(ExpectedConditions.visibilityOf(myOrdersHeading)).isDisplayed();
@@ -31,6 +33,7 @@ public class OpenCartMyAccountPage {
         }
     }
 
+    @Step("Verify if View Order History link is displayed")
     public boolean isViewOrderHistoryLinkDisplayed() {
         try {
             return wait.until(ExpectedConditions.visibilityOf(viewOrderHistoryLink)).isDisplayed();

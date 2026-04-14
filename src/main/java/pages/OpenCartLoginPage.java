@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import io.qameta.allure.Step;
 
 public class OpenCartLoginPage {
 
@@ -31,6 +32,7 @@ public class OpenCartLoginPage {
         PageFactory.initElements(driver, this);
     }
 
+    @Step("Enter email address: {email}")
     public void enterEmail(String email) {
         try {
             wait.until(ExpectedConditions.visibilityOf(emailInput)).clear();
@@ -40,6 +42,7 @@ public class OpenCartLoginPage {
         }
     }
 
+    @Step("Enter password")
     public void enterPassword(String password) {
         try {
             wait.until(ExpectedConditions.visibilityOf(passwordInput)).clear();
@@ -49,6 +52,7 @@ public class OpenCartLoginPage {
         }
     }
 
+    @Step("Click on the login button")
     public void clickLoginButton() {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
@@ -57,6 +61,7 @@ public class OpenCartLoginPage {
         }
     }
 
+    @Step("Get login error message")
     public String getErrorMessage() {
         try {
             return wait.until(ExpectedConditions.visibilityOf(errorMessage)).getText();
@@ -65,6 +70,7 @@ public class OpenCartLoginPage {
         }
     }
 
+    @Step("Login with username: {email}")
     public OpenCartMyAccountPage doLogin(String email, String password) {
         enterEmail(email);
         enterPassword(password);
