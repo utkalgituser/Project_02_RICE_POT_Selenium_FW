@@ -7,3 +7,5 @@ target/
 .idea/
 *.iml
 *.class
+allure-results/
+allure-report/
