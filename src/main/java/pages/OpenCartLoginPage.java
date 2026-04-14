@@ -1,74 +1,52 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
+import utils.ElementUtil;
+import utils.AppConstants;
 
 public class OpenCartLoginPage {
 
     private WebDriver driver;
-    private WebDriverWait wait;
+    private ElementUtil eleUtil;
 
-    @FindBy(xpath = "//input[@id='input-email']")
-    private WebElement emailInput;
+    // 1. By locator - OR
+    private By emailInput = By.xpath("//input[@id='input-email']");
+    private By passwordInput = By.xpath("//input[@id='input-password']");
+    private By loginButton = By.xpath("//input[@value='Login']");
+    private By errorMessage = By.xpath("//div[contains(@class, 'alert-danger')]");
 
-    @FindBy(xpath = "//input[@id='input-password']")
-    private WebElement passwordInput;
-
-    @FindBy(xpath = "//input[@value='Login']")
-    private WebElement loginButton;
-
-    @FindBy(xpath = "//div[contains(@class, 'alert-danger')]")
-    private WebElement errorMessage;
-
+    // 2. Page constructor
     public OpenCartLoginPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        PageFactory.initElements(driver, this);
+        this.eleUtil = new ElementUtil(driver);
+    }
+
+    // 3. Page actions
+    public String getLoginPageTitle() {
+        return eleUtil.waitForTitleToBe(AppConstants.SMALL_DEFAULT_TIMEOUT, AppConstants.LOGIN_PAGE_TITLE);
     }
 
     public void enterEmail(String email) {
-        try {
-            wait.until(ExpectedConditions.visibilityOf(emailInput)).clear();
-            emailInput.sendKeys(email);
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while entering email: " + e.getMessage(), e);
-        }
+        eleUtil.doSendKeys(emailInput, email);
     }
 
     public void enterPassword(String password) {
-        try {
-            wait.until(ExpectedConditions.visibilityOf(passwordInput)).clear();
-            passwordInput.sendKeys(password);
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while entering password: " + e.getMessage(), e);
-        }
+        eleUtil.doSendKeys(passwordInput, password);
     }
 
     public void clickLoginButton() {
-        try {
-            wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while clicking login button: " + e.getMessage(), e);
-        }
+        eleUtil.doClick(loginButton);
     }
 
     public String getErrorMessage() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOf(errorMessage)).getText();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while fetching error message: " + e.getMessage(), e);
-        }
+        return eleUtil.doGetText(errorMessage);
     }
 
     public OpenCartMyAccountPage doLogin(String email, String password) {
-        enterEmail(email);
-        enterPassword(password);
-        clickLoginButton();
+        eleUtil.doSendKeys(emailInput, email);
+        eleUtil.doSendKeys(passwordInput, password);
+        eleUtil.doClick(loginButton);
         return new OpenCartMyAccountPage(driver);
     }
 }

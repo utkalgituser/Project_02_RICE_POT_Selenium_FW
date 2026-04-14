@@ -1,41 +1,28 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
+import utils.ElementUtil;
 
 public class OpenCartMyAccountPage {
 
-    private WebDriverWait wait;
+    private ElementUtil eleUtil;
 
-    @FindBy(xpath = "//h2[text()='My Orders']")
-    private WebElement myOrdersHeading;
+    // 1. By locator - OR
+    private By myOrdersHeading = By.xpath("//h2[text()='My Orders']");
+    private By viewOrderHistoryLink = By.xpath("//a[text()='View your order history']");
 
-    @FindBy(xpath = "//a[text()='View your order history']")
-    private WebElement viewOrderHistoryLink;
-
+    // 2. Page constructor
     public OpenCartMyAccountPage(WebDriver driver) {
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        PageFactory.initElements(driver, this);
+        this.eleUtil = new ElementUtil(driver);
     }
 
+    // 3. Page actions
     public boolean isMyOrdersHeadingDisplayed() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOf(myOrdersHeading)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+        return eleUtil.isElementDisplayed(myOrdersHeading);
     }
 
     public boolean isViewOrderHistoryLinkDisplayed() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOf(viewOrderHistoryLink)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+        return eleUtil.isElementDisplayed(viewOrderHistoryLink);
     }
 }
