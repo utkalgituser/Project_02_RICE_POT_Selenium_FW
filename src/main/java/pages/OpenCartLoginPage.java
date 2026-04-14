@@ -1,80 +1,121 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
-import io.qameta.allure.Step;
+import utils.ElementUtil;
+import utils.AppConstants;
+import java.util.Base64;
 
+/**
+ * Page object class representing the OpenCart Login Page.
+ * Encapsulates the UI elements and actions associated with the login functionality.
+ */
 public class OpenCartLoginPage {
 
     private WebDriver driver;
-    private WebDriverWait wait;
+    private ElementUtil eleUtil;
 
-    @FindBy(xpath = "//input[@id='input-email']")
-    private WebElement emailInput;
+    // 1. By locator - OR
+    private By emailInput = By.xpath("//input[@id='input-email']");
+    private By passwordInput = By.xpath("//input[@id='input-password']");
+    private By loginButton = By.xpath("//input[@value='Login']");
+    private By errorMessage = By.xpath("//div[contains(@class, 'alert-danger')]");
 
-    @FindBy(xpath = "//input[@id='input-password']")
-    private WebElement passwordInput;
-
-    @FindBy(xpath = "//input[@value='Login']")
-    private WebElement loginButton;
-
-    @FindBy(xpath = "//div[contains(@class, 'alert-danger')]")
-    private WebElement errorMessage;
-
+    /**
+     * Constructor for OpenCartLoginPage.
+     * 
+     * @param driver the WebDriver instance
+     */
     public OpenCartLoginPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        PageFactory.initElements(driver, this);
+        this.eleUtil = new ElementUtil(driver);
     }
 
-    @Step("Enter email address: {email}")
+    /**
+     * Gets the title of the login page.
+     * 
+     * @return the login page title as a String
+     */
+    public String getLoginPageTitle() {
+        return eleUtil.waitForTitleToBe(AppConstants.SMALL_DEFAULT_TIMEOUT, AppConstants.LOGIN_PAGE_TITLE);
+    }
+
+    /**
+     * Enters the email address into the email input field.
+     * If the email is Base64 encoded, it will be automatically decoded.
+     * 
+     * @param email the email address or its Base64 encoded representation
+     */
     public void enterEmail(String email) {
-        try {
-            wait.until(ExpectedConditions.visibilityOf(emailInput)).clear();
-            emailInput.sendKeys(email);
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while entering email: " + e.getMessage(), e);
-        }
+        eleUtil.doSendKeys(emailInput, decodeData(email));
     }
 
-    @Step("Enter password")
+    /**
+     * Enters the password into the password input field.
+     * If the password is Base64 encoded, it will be automatically decoded.
+     * 
+     * @param password the password or its Base64 encoded representation
+     */
     public void enterPassword(String password) {
-        try {
-            wait.until(ExpectedConditions.visibilityOf(passwordInput)).clear();
-            passwordInput.sendKeys(password);
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while entering password: " + e.getMessage(), e);
-        }
+        eleUtil.doSendKeys(passwordInput, decodeData(password));
     }
 
-    @Step("Click on the login button")
+    /**
+     * Clicks on the login button.
+     */
     public void clickLoginButton() {
-        try {
-            wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while clicking login button: " + e.getMessage(), e);
-        }
+        eleUtil.doClick(loginButton);
     }
 
-    @Step("Get login error message")
+    /**
+     * Gets the error message displayed after an unsuccessful login attempt.
+     * 
+     * @return the error message as a String
+     */
     public String getErrorMessage() {
-        try {
-            return wait.until(ExpectedConditions.visibilityOf(errorMessage)).getText();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while fetching error message: " + e.getMessage(), e);
-        }
+        return eleUtil.doGetText(errorMessage);
     }
 
-    @Step("Login with username: {email}")
+    /**
+     * Performs a complete login action and navigates to the My Account page.
+     * 
+     * @param email    the email address (raw or Base64 encoded)
+     * @param password the password (raw or Base64 encoded)
+     * @return the OpenCartMyAccountPage object upon successful login transition
+     */
     public OpenCartMyAccountPage doLogin(String email, String password) {
+        System.out.println("Logging in with email: " + maskEmail(decodeData(email)));
         enterEmail(email);
         enterPassword(password);
         clickLoginButton();
         return new OpenCartMyAccountPage(driver);
+    }
+    
+    /**
+     * Masks a sensitive email address for logging and reporting purposes.
+     * 
+     * @param email the raw email address
+     * @return the partially masked email address
+     */
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) return "******";
+        String[] parts = email.split("@");
+        if (parts[0].length() <= 2) return "**@" + parts[1];
+        return parts[0].substring(0, 2) + "*****@" + parts[1];
+    }
+    
+    /**
+     * Decodes Base64 encoded data to prevent raw sensitive strings from being exposed in test data.
+     * 
+     * @param encodedData the potentially Base64 encoded data
+     * @return the decoded string, or the original string if it is not valid Base64
+     */
+    private String decodeData(String encodedData) {
+        try {
+            return new String(Base64.getDecoder().decode(encodedData));
+        } catch (IllegalArgumentException e) {
+            // Fallback in case raw data was provided while transitioning
+            return encodedData;
+        }
     }
 }
