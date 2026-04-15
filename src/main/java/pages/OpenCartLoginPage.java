@@ -6,8 +6,15 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 
+import java.time.Duration;
+import java.util.Objects;
+
+import utils.AppConstants;
+
+// PageFactory initializes @FindBy fields at runtime via reflection;
+// Eclipse's null analysis cannot verify this, so we suppress here.
+@SuppressWarnings("null")
 public class OpenCartLoginPage {
 
     private WebDriver driver;
@@ -26,8 +33,10 @@ public class OpenCartLoginPage {
     private WebElement errorMessage;
 
     public OpenCartLoginPage(WebDriver driver) {
+        Objects.requireNonNull(driver, "WebDriver must not be null");
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        this.wait = new WebDriverWait(driver,
+                Objects.requireNonNull(Duration.ofSeconds(AppConstants.EXPLICIT_WAIT_TIMEOUT)));
         PageFactory.initElements(driver, this);
     }
 

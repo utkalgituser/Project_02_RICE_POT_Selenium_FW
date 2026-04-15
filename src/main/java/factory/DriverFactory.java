@@ -4,7 +4,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
 import java.time.Duration;
+import java.util.Objects;
+
+import utils.AppConstants;
 
 public class DriverFactory {
 
@@ -31,7 +35,8 @@ public class DriverFactory {
                     break;
             }
             driver.manage().window().maximize();
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
+            driver.manage().timeouts().pageLoadTimeout(
+                    Objects.requireNonNull(Duration.ofSeconds(AppConstants.PAGE_LOAD_TIMEOUT)));
             driverProvider.set(driver);
         }
         return driverProvider.get();
