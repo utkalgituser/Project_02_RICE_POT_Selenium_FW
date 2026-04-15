@@ -12,9 +12,14 @@ import factory.DriverFactory;
 import pages.OpenCartLoginPage;
 import pages.OpenCartMyAccountPage;
 import utils.ConfigReader;
-
-import java.util.Objects;
-
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+@Epic("OpenCart Automation")
+@Feature("Login functionality")
 public class ValidLoginTest {
 
     private OpenCartLoginPage loginPage;
@@ -28,6 +33,9 @@ public class ValidLoginTest {
     }
 
     @Test(dataProvider = "validLoginData", dataProviderClass = utils.TestDataUtils.class)
+    @Story("Valid Login Story")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that the user can login with valid credentials")
     public void testValidCredentials(String username, String password) {
         OpenCartMyAccountPage myAccountPage = loginPage.doLogin(username, password);
 

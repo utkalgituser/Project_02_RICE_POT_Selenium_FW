@@ -8,12 +8,16 @@ This is an enterprise-grade Selenium WebDriver automation framework built for te
 - **Build Tool**: Maven
 - **Core Automation Engine**: Selenium WebDriver
 - **Test Runner**: TestNG
-- **Data Parsing**: Jackson Databind (JSON), Apache POI (Excel)
+- **Data Parsing**: Jackson Databind (JSON)
+- **Reporting**: Allure Framework
 
 ## Key Features
 - **Page Object Model (POM)**: Strict separation of UI element definitions and test logics. Custom unchecked exceptions securely encapsulate failures natively without propagating structural checked `Exception` chaining into test cases.
-- **Configurable Data Providers**: Implements TestNG's `@DataProvider` with support for both **JSON** and **Excel (.xlsx)** data sources. The active source is controlled by a single property (`testdata.source`) in `config.properties`. Defaults to **JSON** — any unrecognized or missing value automatically falls back to JSON.
-- **External Framework Configurations**: A robust configurations approach utilizing `config.properties` ensures parameters like base URLs, test data paths, and data source type remain thoroughly segregated from compiled logic.
+- **Dynamic JSON Data Providers**: Implements TestNG's `@DataProvider` combined with Jackson to read test execution data externally from JSON files (`src/test/resources/testdata.json`). No users or IDs are hardcoded!
+- **Element interactions Strategy**: Explicit Wait wrappers using localized `ElementUtil` coupled natively with `By` locators instead of standard `@FindBy` implementations. This isolates WebDriver dependency issues and unifies interaction timeouts set in `AppConstants`.
+- **Sensitive Log Masking**: Includes Base64 data decoding mechanism seamlessly coupled with data masking (`test***@email.com`) when transferring configuration datasets (credentials) to prevent report or logging linkage leaks.
+- **Reporting**: Interactive test dashboards generation powered by Allure representations securely attaching directly to TestNG events dynamically through `aspectjweaver`.
+- **External Framework Configurations**: A robust configurations approach utilizing `config.properties` ensures parameters like base URLs or test data paths remain thoroughly segregated from compiled logic.
 
 ## Project Structure
 ```text
@@ -39,6 +43,11 @@ To execute all tests via Maven, open your terminal at the root path of the proje
 
 ```bash
 mvn clean test
+```
+
+Optionally, you can generate and visualize your detailed tests run locally using the Allure server metrics (Ensure the Allure CLI is installed locally):
+```bash
+allure serve allure-results
 ```
 
 ## Configuration & Setup

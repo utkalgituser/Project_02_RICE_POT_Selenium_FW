@@ -41,3 +41,12 @@
   - `.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE.md`: Standardized bug and feature requests.
   - `.github/PULL_REQUEST_TEMPLATE.md`: Template for PR motivation and changes.
   - `.github/REVIEWER_CHECKLIST.md`: Verification checklist for PR reviewers.
+
+## OpenCart Feature: Reporting & Advanced Setup
+- **Objective:** Introduce Allure Reporting frameworks, replace PageFactory (`@FindBy`) with standard `By` locators for Page classes, encapsulate explicit waits in a dedicated utility, and handle test data securely using Base64 decode execution and masked logging.
+- **Files Modified / Created:**
+  - `pom.xml`: Integrated `allure-testng` dependency and updated `maven-surefire-plugin` with `aspectjweaver`.
+  - `src/main/java/utils/AppConstants.java`: Centralized application constants such as timeout lengths and page titles.
+  - `src/main/java/utils/ElementUtil.java`: Built a wrapper encapsulating custom explicit waits around `By` locators for safe driver interactions.
+  - `src/main/java/pages/OpenCartLoginPage.java`: Transitioned to `By` bindings. Implemented `decodeData(String)` Base64 decryption for sensitive strings, and `maskEmail(String)` for secure logging reports. Javadoc documentation generated.
+  - `src/main/java/pages/OpenCartMyAccountPage.java`: Transitioned to `By` bindings utilizing `ElementUtil`. Javadoc documentation generated.

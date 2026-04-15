@@ -11,9 +11,14 @@ import org.testng.annotations.Test;
 import factory.DriverFactory;
 import pages.OpenCartLoginPage;
 import utils.ConfigReader;
-
-import java.util.Objects;
-
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+@Epic("OpenCart Automation")
+@Feature("Login functionality")
 public class InvalidLoginTest {
 
     private OpenCartLoginPage loginPage;
@@ -27,6 +32,9 @@ public class InvalidLoginTest {
     }
 
     @Test(dataProvider = "invalidLoginData", dataProviderClass = utils.TestDataUtils.class)
+    @Story("Invalid Login Story")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that appropriate error message is displayed when invalid credentials are provided")
     public void testInvalidCredentials(String username, String password) {
         loginPage.doLogin(username, password);
 
