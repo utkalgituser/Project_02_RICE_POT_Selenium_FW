@@ -7,8 +7,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
 import factory.DriverFactory;
 import pages.OpenCartLoginPage;
+import pages.OpenCartMyAccountPage;
 import utils.ConfigReader;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -20,14 +22,13 @@ import io.qameta.allure.Story;
 @Feature("Login functionality")
 public class ValidLoginTest {
 
-    private WebDriver driver;
     private OpenCartLoginPage loginPage;
 
-    @Parameters({"browser"})
+    @Parameters({ "browser" })
     @BeforeMethod
     public void setUp(@Optional("chrome") String browser) {
-        driver = DriverFactory.getDriver(browser);
-        driver.get(ConfigReader.getProperty("url"));
+        WebDriver driver = DriverFactory.getDriver(browser);
+        driver.get(Objects.requireNonNull(ConfigReader.getProperty("url")));
         loginPage = new OpenCartLoginPage(driver);
     }
 
@@ -36,10 +37,12 @@ public class ValidLoginTest {
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that the user can login with valid credentials")
     public void testValidCredentials(String username, String password) {
-        pages.OpenCartMyAccountPage myAccountPage = loginPage.doLogin(username, password);
-        
-        Assert.assertTrue(myAccountPage.isMyOrdersHeadingDisplayed(), "'My Orders' heading is not displayed.");
-        Assert.assertTrue(myAccountPage.isViewOrderHistoryLinkDisplayed(), "'View your order history' link is not displayed.");
+        OpenCartMyAccountPage myAccountPage = loginPage.doLogin(username, password);
+
+        Assert.assertTrue(myAccountPage.isMyOrdersHeadingDisplayed(),
+                "'My Orders' heading is not displayed.");
+        Assert.assertTrue(myAccountPage.isViewOrderHistoryLinkDisplayed(),
+                "'View your order history' link is not displayed.");
     }
 
     @AfterMethod

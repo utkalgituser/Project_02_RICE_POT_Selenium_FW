@@ -23,14 +23,19 @@ This is an enterprise-grade Selenium WebDriver automation framework built for te
 ```text
 src/
 ├── main/java/
-│   ├── factory/          # Core abstractions (DriverFactory for Webdriver management)
-│   ├── pages/            # Page classes containing WebElements and interaction methods (OpenCartLoginPage, OpenCartMyAccountPage)
-│   └── utils/            # Shared utilities (ConfigReader, JSON TestDataUtils)
+│   ├── factory/          # Core abstractions (DriverFactory for WebDriver management)
+│   ├── pages/            # Page classes containing WebElements and interaction methods
+│   └── utils/            # Shared utilities:
+│       ├── ConfigReader.java          # Reads key-value pairs from config.properties
+│       ├── TestDataUtils.java         # Configurable DataProvider (JSON / Excel routing)
+│       ├── ExcelDataReader.java       # Generic Excel (.xlsx) reader using Apache POI
+│       └── ExcelTestDataGenerator.java # One-time utility to generate testdata.xlsx
 ├── test/java/
-│   └── tests/            # TestNG test scripts validating page functionality (ValidLoginTest, InvalidLoginTest)
+│   └── tests/            # TestNG test scripts (ValidLoginTest, InvalidLoginTest)
 └── test/resources/
-    ├── config.properties # Contains framework level keys/values linking URL paths and configurations
-    └── testdata.json     # JSON payload array structuring data-driven validation tests
+    ├── config.properties  # Framework-level configuration (URLs, data source, paths)
+    ├── testdata.json      # JSON test data (validLogins / invalidLogins arrays)
+    └── testdata.xlsx      # Excel test data (ValidLogins / InvalidLogins sheets)
 ```
 
 ## Running the Tests
@@ -47,4 +52,22 @@ allure serve allure-results
 
 ## Configuration & Setup
 1. **Configuring target URL**: Ensure the `url` property is pointing to your environment correctly within `src/test/resources/config.properties`.
-2. **Handling Data Sets**: To add additional datasets for parameterized assertions, append items into `src/test/resources/testdata.json` underneath the `validLogins` or `invalidLogins` arrays. The tests automatically iterate across newly provided user inputs.
+
+2. **Switching Data Source**: Set the `testdata.source` property in `config.properties`:
+   ```properties
+   # Use JSON (default):
+   testdata.source=json
+
+   # Use Excel:
+   testdata.source=excel
+   ```
+   > **Note:** Only `json` and `excel` are recognized values. Any other value (including typos) will automatically default to JSON.
+
+3. **Handling JSON Data Sets**: To add additional datasets, append items into `src/test/resources/testdata.json` underneath the `validLogins` or `invalidLogins` arrays. The tests automatically iterate across newly provided user inputs.
+
+4. **Handling Excel Data Sets**: Edit `src/test/resources/testdata.xlsx` directly. Each sheet (`ValidLogins`, `InvalidLogins`) must have a header row (`username`, `password`) followed by data rows. Sheet names are configurable in `config.properties`:
+   ```properties
+   testdata.excel.path=src/test/resources/testdata.xlsx
+   testdata.excel.sheet.validLogins=ValidLogins
+   testdata.excel.sheet.invalidLogins=InvalidLogins
+   ```

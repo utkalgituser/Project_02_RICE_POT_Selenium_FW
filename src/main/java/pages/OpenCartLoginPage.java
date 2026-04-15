@@ -27,6 +27,7 @@ public class OpenCartLoginPage {
      * @param driver the WebDriver instance
      */
     public OpenCartLoginPage(WebDriver driver) {
+        Objects.requireNonNull(driver, "WebDriver must not be null");
         this.driver = driver;
         this.eleUtil = new ElementUtil(driver);
     }
