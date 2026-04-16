@@ -1,7 +1,6 @@
 package utils;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -80,11 +79,6 @@ public class ExcelDataReader {
     private static String getCellValue(Cell cell, DataFormatter formatter) {
         if (cell == null) {
             return "";
-        }
-
-        if (cell.getCellType() == CellType.NUMERIC) {
-            // Use DataFormatter to avoid "1234.0" for integer-like values
-            return formatter.formatCellValue(cell).trim();
         }
 
         return formatter.formatCellValue(cell).trim();
