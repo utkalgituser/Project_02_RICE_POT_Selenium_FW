@@ -1,5 +1,6 @@
 package tests;
 
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import java.util.Objects;
@@ -32,18 +33,30 @@ public class InvalidLoginTest {
         loginPage = new OpenCartLoginPage(driver);
     }
 
+    private static final String LOCKOUT_MSG = "exceeded allowed number of login attempts";
+
     @Test(dataProvider = "invalidLoginData", dataProviderClass = utils.TestDataUtils.class)
     @Story("Invalid Login Story")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that appropriate error message is displayed when invalid credentials are provided")
-    public void testInvalidCredentials(String username, String password) {
+    public void testInvalidCredentials(@NonNull String username, @NonNull String password) {
         loginPage.doLogin(username, password);
 
         String actualErrorMsg = loginPage.getErrorMessage();
         String expectedErrorMsg = "Warning: No match for E-Mail Address and/or Password.";
 
+        if (actualErrorMsg.contains(LOCKOUT_MSG)) {
+            throw new IllegalStateException(
+                "Account temporarily locked out — cannot verify invalid-credentials flow."
+                + "\n  Account  : [" + username + "]"
+                + "\n  UI message: [" + actualErrorMsg + "]"
+                + "\n  Action   : Wait ~1 hour for the lockout to lift, then re-run.");
+        }
+
         Assert.assertTrue(actualErrorMsg.contains(expectedErrorMsg),
-                "The displayed error message does not match the expected validation text.");
+                "The displayed error message does not match the expected validation text."
+                + "\n  Expected to contain : [" + expectedErrorMsg + "]"
+                + "\n  Actual UI message   : [" + actualErrorMsg + "]");
     }
 
     @AfterMethod
