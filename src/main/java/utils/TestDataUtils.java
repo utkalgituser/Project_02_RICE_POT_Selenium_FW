@@ -2,6 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.NonNull;
 import org.testng.annotations.DataProvider;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class TestDataUtils {
      * Only {@code "json"} and {@code "excel"} are valid values.
      * Any unrecognized, missing, or blank value defaults to {@code "json"}.
      */
-    private static String getDataSource() {
+    private static @NonNull String getDataSource() {
         String source = ConfigReader.getProperty("testdata.source", SOURCE_JSON);
         if (SOURCE_EXCEL.equalsIgnoreCase(source.trim())) {
             return SOURCE_EXCEL;
@@ -69,24 +70,39 @@ public class TestDataUtils {
      * @param dataArrayName the JSON array key (e.g. "validLogins", "invalidLogins")
      * @return 2D Object array for TestNG DataProvider
      */
-    private static Object[][] readJsonData(String dataArrayName) {
+    private static @NonNull Object[][] readJsonData(@NonNull String dataArrayName) {
         String filePath = ConfigReader.getProperty("testdata.json.path");
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             JsonNode rootNode = mapper.readTree(new File(filePath));
+            if (rootNode == null) {
+                throw new RuntimeException(
+                        "JSON file is empty or could not be parsed: " + filePath);
+            }
             JsonNode dataArray = rootNode.get(dataArrayName);
 
             if (dataArray == null || !dataArray.isArray()) {
                 throw new RuntimeException(
-                        "Could not find array '" + dataArrayName + "' in JSON file.");
+                        "Could not find array '" + dataArrayName + "' in JSON file: " + filePath);
             }
 
             Object[][] data = new Object[dataArray.size()][2];
             for (int i = 0; i < dataArray.size(); i++) {
                 JsonNode node = dataArray.get(i);
-                data[i][0] = node.get("username").asText();
-                data[i][1] = node.get("password").asText();
+                if (node == null) {
+                    throw new RuntimeException(
+                            "Null entry at index " + i + " in JSON array '" + dataArrayName + "'.");
+                }
+                JsonNode usernameNode = node.get("username");
+                JsonNode passwordNode = node.get("password");
+                if (usernameNode == null || passwordNode == null) {
+                    throw new RuntimeException(
+                            "Missing 'username' or 'password' field at index " + i
+                            + " in array '" + dataArrayName + "'.");
+                }
+                data[i][0] = usernameNode.asText();
+                data[i][1] = passwordNode.asText();
             }
 
             return data;

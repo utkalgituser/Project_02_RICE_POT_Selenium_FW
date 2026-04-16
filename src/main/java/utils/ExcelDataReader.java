@@ -6,9 +6,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jspecify.annotations.NonNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Generic utility to read test data from Excel (.xlsx) files.
@@ -27,7 +29,10 @@ public class ExcelDataReader {
      * @return a 2D Object array where each row is a set of test parameters
      * @throws RuntimeException if the file or sheet cannot be read
      */
-    public static Object[][] readExcelData(String filePath, String sheetName) {
+    public static Object[][] readExcelData(@NonNull String filePath, @NonNull String sheetName) {
+        Objects.requireNonNull(filePath, "filePath must not be null");
+        Objects.requireNonNull(sheetName, "sheetName must not be null");
+
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -37,22 +42,27 @@ public class ExcelDataReader {
                         "Sheet '" + sheetName + "' not found in Excel file: " + filePath);
             }
 
-            int totalRows = sheet.getPhysicalNumberOfRows();
-            if (totalRows <= 1) {
+            // getLastRowNum() returns the 0-based index of the last row — handles sparse/gapped sheets correctly.
+            // getPhysicalNumberOfRows() only counts written rows and would undercount when blank rows exist mid-sheet.
+            int lastRowNum = sheet.getLastRowNum();
+            if (lastRowNum < 1) {
                 throw new RuntimeException(
                         "Sheet '" + sheetName + "' has no data rows (only header or empty).");
             }
 
             // First row is treated as header — determine column count from it
             Row headerRow = sheet.getRow(0);
+            if (headerRow == null) {
+                throw new RuntimeException(
+                        "Header row (row 0) is missing in sheet: '" + sheetName + "'");
+            }
             int totalCols = headerRow.getPhysicalNumberOfCells();
 
-            // Data rows start from index 1 (skip header)
-            int dataRowCount = totalRows - 1;
-            Object[][] data = new Object[dataRowCount][totalCols];
+            // Data rows: indices 1 through lastRowNum (inclusive) → lastRowNum total data rows
+            Object[][] data = new Object[lastRowNum][totalCols];
             DataFormatter formatter = new DataFormatter();
 
-            for (int i = 1; i <= dataRowCount; i++) {
+            for (int i = 1; i <= lastRowNum; i++) {
                 Row row = sheet.getRow(i);
                 for (int j = 0; j < totalCols; j++) {
                     Cell cell = (row != null) ? row.getCell(j) : null;
@@ -76,11 +86,11 @@ public class ExcelDataReader {
      * @param formatter a reusable DataFormatter instance
      * @return the cell value as a trimmed String, or empty string if null
      */
-    private static String getCellValue(Cell cell, DataFormatter formatter) {
+    private static @NonNull String getCellValue(Cell cell, @NonNull DataFormatter formatter) {
         if (cell == null) {
             return "";
         }
 
-        return formatter.formatCellValue(cell).trim();
+        return Objects.requireNonNull(formatter.formatCellValue(cell).trim());
     }
 }

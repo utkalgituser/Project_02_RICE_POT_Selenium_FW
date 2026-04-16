@@ -1,5 +1,6 @@
 package utils;
 
+import org.jspecify.annotations.NonNull;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class ConfigReader {
      * @return the non-null, trimmed property value
      * @throws RuntimeException if the key is missing from config.properties
      */
-    public static String getProperty(String key) {
+    public static @NonNull String getProperty(@NonNull String key) {
         Objects.requireNonNull(key, "Config key must not be null.");
         String value = properties.getProperty(key);
         if (value == null) {
@@ -48,7 +49,7 @@ public class ConfigReader {
                     "Missing required config key: '" + key
                             + "'. Please add it to src/test/resources/config.properties");
         }
-        return value.trim();
+        return Objects.requireNonNull(value.trim());
     }
 
     /**
@@ -62,9 +63,10 @@ public class ConfigReader {
      * @param defaultValue the fallback value if the key is absent
      * @return the property value, or defaultValue if not found
      */
-    public static String getProperty(String key, String defaultValue) {
+    public static @NonNull String getProperty(@NonNull String key, @NonNull String defaultValue) {
         Objects.requireNonNull(key, "Config key must not be null.");
+        Objects.requireNonNull(defaultValue, "defaultValue must not be null.");
         String value = properties.getProperty(key);
-        return (value != null) ? value.trim() : defaultValue;
+        return (value != null) ? Objects.requireNonNull(value.trim()) : defaultValue;
     }
 }
