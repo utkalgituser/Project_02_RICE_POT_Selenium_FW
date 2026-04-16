@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import utils.ElementUtil;
 import utils.AppConstants;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * Page object class representing the OpenCart Login Page.
