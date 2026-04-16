@@ -1,10 +1,12 @@
 package pages;
 
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import utils.ElementUtil;
 import utils.AppConstants;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * Page object class representing the OpenCart Login Page.
@@ -12,23 +14,22 @@ import java.util.Base64;
  */
 public class OpenCartLoginPage {
 
-    private WebDriver driver;
-    private ElementUtil eleUtil;
+    private @NonNull WebDriver driver;
+    private @NonNull ElementUtil eleUtil;
 
     // 1. By locator - OR
-    private By emailInput = By.xpath("//input[@id='input-email']");
-    private By passwordInput = By.xpath("//input[@id='input-password']");
-    private By loginButton = By.xpath("//input[@value='Login']");
-    private By errorMessage = By.xpath("//div[contains(@class, 'alert-danger')]");
+    private @NonNull By emailInput = By.xpath("//input[@id='input-email']");
+    private @NonNull By passwordInput = By.xpath("//input[@id='input-password']");
+    private @NonNull By loginButton = By.xpath("//input[@value='Login']");
+    private @NonNull By errorMessage = By.xpath("//div[contains(@class, 'alert-danger')]");
 
     /**
      * Constructor for OpenCartLoginPage.
      * 
      * @param driver the WebDriver instance
      */
-    public OpenCartLoginPage(WebDriver driver) {
-        Objects.requireNonNull(driver, "WebDriver must not be null");
-        this.driver = driver;
+    public OpenCartLoginPage(@NonNull WebDriver driver) {
+        this.driver = Objects.requireNonNull(driver, "WebDriver must not be null");
         this.eleUtil = new ElementUtil(driver);
     }
 
@@ -37,7 +38,7 @@ public class OpenCartLoginPage {
      * 
      * @return the login page title as a String
      */
-    public String getLoginPageTitle() {
+    public @NonNull String getLoginPageTitle() {
         return eleUtil.waitForTitleToBe(AppConstants.SMALL_DEFAULT_TIMEOUT, AppConstants.LOGIN_PAGE_TITLE);
     }
 
@@ -47,7 +48,7 @@ public class OpenCartLoginPage {
      * 
      * @param email the email address or its Base64 encoded representation
      */
-    public void enterEmail(String email) {
+    public void enterEmail(@NonNull String email) {
         eleUtil.doSendKeys(emailInput, decodeData(email));
     }
 
@@ -57,7 +58,7 @@ public class OpenCartLoginPage {
      * 
      * @param password the password or its Base64 encoded representation
      */
-    public void enterPassword(String password) {
+    public void enterPassword(@NonNull String password) {
         eleUtil.doSendKeys(passwordInput, decodeData(password));
     }
 
@@ -73,7 +74,7 @@ public class OpenCartLoginPage {
      * 
      * @return the error message as a String
      */
-    public String getErrorMessage() {
+    public @NonNull String getErrorMessage() {
         return eleUtil.doGetText(errorMessage);
     }
 
@@ -84,7 +85,7 @@ public class OpenCartLoginPage {
      * @param password the password (raw or Base64 encoded)
      * @return the OpenCartMyAccountPage object upon successful login transition
      */
-    public OpenCartMyAccountPage doLogin(String email, String password) {
+    public OpenCartMyAccountPage doLogin(@NonNull String email, @NonNull String password) {
         System.out.println("Logging in with email: " + maskEmail(decodeData(email)));
         enterEmail(email);
         enterPassword(password);
@@ -111,7 +112,7 @@ public class OpenCartLoginPage {
      * @param encodedData the potentially Base64 encoded data
      * @return the decoded string, or the original string if it is not valid Base64
      */
-    private String decodeData(String encodedData) {
+    private @NonNull String decodeData(@NonNull String encodedData) {
         try {
             return new String(Base64.getDecoder().decode(encodedData));
         } catch (IllegalArgumentException e) {

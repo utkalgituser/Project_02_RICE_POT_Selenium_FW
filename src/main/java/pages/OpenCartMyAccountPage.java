@@ -1,8 +1,10 @@
 package pages;
 
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import utils.ElementUtil;
+import java.util.Objects;
 
 /**
  * Page object class representing the OpenCart My Account Page.
@@ -10,18 +12,19 @@ import utils.ElementUtil;
  */
 public class OpenCartMyAccountPage {
 
-    private ElementUtil eleUtil;
+    private @NonNull ElementUtil eleUtil;
 
     // 1. By locator - OR
-    private By myOrdersHeading = By.xpath("//h2[text()='My Orders']");
-    private By viewOrderHistoryLink = By.xpath("//a[text()='View your order history']");
+    private @NonNull By myOrdersHeading = By.xpath("//h2[text()='My Orders']");
+    private @NonNull By viewOrderHistoryLink = By.xpath("//a[text()='View your order history']");
 
     /**
      * Constructor for OpenCartMyAccountPage.
      * 
      * @param driver the WebDriver instance
      */
-    public OpenCartMyAccountPage(WebDriver driver) {
+    public OpenCartMyAccountPage(@NonNull WebDriver driver) {
+        Objects.requireNonNull(driver, "WebDriver must not be null");
         this.eleUtil = new ElementUtil(driver);
     }
 

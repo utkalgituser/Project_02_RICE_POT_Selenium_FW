@@ -1,5 +1,6 @@
 package factory;
 
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -14,7 +15,7 @@ public class DriverFactory {
 
     private static ThreadLocal<WebDriver> driverProvider = new ThreadLocal<>();
 
-    public static WebDriver getDriver(String browser) {
+    public static @NonNull WebDriver getDriver(String browser) {
         if (driverProvider.get() == null) {
             WebDriver driver;
             
@@ -35,11 +36,10 @@ public class DriverFactory {
                     break;
             }
             driver.manage().window().maximize();
-            driver.manage().timeouts().pageLoadTimeout(
-                    Objects.requireNonNull(Duration.ofSeconds(AppConstants.PAGE_LOAD_TIMEOUT)));
+            driver.manage().timeouts().pageLoadTimeout(Objects.requireNonNull(Duration.ofSeconds(AppConstants.PAGE_LOAD_TIMEOUT)));
             driverProvider.set(driver);
         }
-        return driverProvider.get();
+        return Objects.requireNonNull(driverProvider.get(), "WebDriver was not initialised for this thread");
     }
 
     public static void quitDriver() {

@@ -1,7 +1,9 @@
 package tests;
 
+import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
+import java.util.Objects;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
@@ -36,7 +38,7 @@ public class ValidLoginTest {
     @Story("Valid Login Story")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that the user can login with valid credentials")
-    public void testValidCredentials(String username, String password) {
+    public void testValidCredentials(@NonNull String username, @NonNull String password) {
         OpenCartMyAccountPage myAccountPage = loginPage.doLogin(username, password);
 
         Assert.assertTrue(myAccountPage.isMyOrdersHeadingDisplayed(),
