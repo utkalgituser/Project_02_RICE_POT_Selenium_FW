@@ -7,6 +7,7 @@ import org.testng.annotations.DataProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Centralized TestNG DataProvider class.
@@ -70,7 +71,7 @@ public class TestDataUtils {
      * @param dataArrayName the JSON array key (e.g. "validLogins", "invalidLogins")
      * @return 2D Object array for TestNG DataProvider
      */
-    private static @NonNull Object[][] readJsonData(@NonNull String dataArrayName) {
+    private static Object @NonNull [][] readJsonData(@NonNull String dataArrayName) {
         String filePath = ConfigReader.getProperty("testdata.json.path");
         ObjectMapper mapper = new ObjectMapper();
 
@@ -87,7 +88,7 @@ public class TestDataUtils {
                         "Could not find array '" + dataArrayName + "' in JSON file: " + filePath);
             }
 
-            Object[][] data = new Object[dataArray.size()][2];
+            Object @NonNull[][] data = Objects.requireNonNull(new Object[dataArray.size()][2]);
             for (int i = 0; i < dataArray.size(); i++) {
                 JsonNode node = dataArray.get(i);
                 if (node == null) {
@@ -101,8 +102,8 @@ public class TestDataUtils {
                             "Missing 'username' or 'password' field at index " + i
                             + " in array '" + dataArrayName + "'.");
                 }
-                data[i][0] = usernameNode.asText();
-                data[i][1] = passwordNode.asText();
+                data[i][0] = Objects.requireNonNull(usernameNode.asText(), "username at index " + i);
+                data[i][1] = Objects.requireNonNull(passwordNode.asText(), "password at index " + i);
             }
 
             return data;

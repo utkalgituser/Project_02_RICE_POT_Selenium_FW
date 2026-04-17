@@ -36,6 +36,8 @@ src/
     ├── config.properties  # Framework-level configuration (URLs, data source, paths)
     ├── testdata.json      # JSON test data (validLogins / invalidLogins arrays)
     └── testdata.xlsx      # Excel test data (ValidLogins / InvalidLogins sheets)
+scripts/
+└── generate_test_plan.py  # Python script — generates the DOCX test plan
 ```
 
 ## Running the Tests
@@ -71,3 +73,128 @@ allure serve allure-results
    testdata.excel.sheet.validLogins=ValidLogins
    testdata.excel.sheet.invalidLogins=InvalidLogins
    ```
+
+---
+
+# Test Plan Generator — OpenCart Login Module
+
+> Enterprise-grade test documentation suite for the OpenCart authentication module, built on the **RICEPOT** prompt-engineering framework.
+
+---
+
+## What This Project Does
+
+This project produces a fully structured, enterprise-quality test plan for the OpenCart Login, Registration, Forgot Password, and Session Management flows. It covers:
+
+- Functional & regression test cases (45 scenarios)
+- Security testing — OWASP Top 10 (SQLi, XSS, CSRF, brute force)
+- Performance testing — JMeter load profiles (1000 concurrent users)
+- Accessibility testing — WCAG 2.1 AA compliance
+- Cross-browser / cross-device compatibility matrix
+
+---
+
+## Project Structure
+
+```
+├── scripts/
+│   └── generate_test_plan.py          # Python script — generates the DOCX test plan
+├── TEST_PLAN_OpenCart_Login.docx      # Enterprise master test plan (generated output)
+├── RICEPOT.md                         # RICEPOT prompt-engineering framework guide
+└── README.md                          # This file
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.10+
+- `python-docx` library
+
+```bash
+pip install python-docx
+```
+
+### Generate the Test Plan
+
+```bash
+cd Project_02_RICE_POT_Selenium_FW
+python scripts/generate_test_plan.py
+```
+
+Output: `TEST_PLAN_OpenCart_Login.docx` in the project root.
+
+---
+
+## Deliverables
+
+| # | File | Format | Description |
+|---|---|---|---|
+| D-01 | `TEST_PLAN_OpenCart_Login.docx` | DOCX | Enterprise master test plan — all sections |
+| D-02 | `RICEPOT.md` | Markdown | RICEPOT framework reference |
+| D-03 | `scripts/generate_test_plan.py` | Python | Automation script for DOCX generation |
+
+---
+
+## Test Plan Sections at a Glance
+
+| Section | Content |
+|---|---|
+| Document Control | Version history, distribution list, approvals |
+| Executive Summary | Scope, AUT details, testing initiative overview |
+| Business Objectives | 6 measurable objectives with success metrics |
+| Scope | In/out of scope, assumptions, dependencies |
+| Test Strategy | 5 test levels, 7 test types, automation strategy |
+| Test Environment | Browser/OS matrix, infrastructure, CI/CD setup |
+| Test Data Management | Account categories, security payloads, GDPR governance |
+| Test Cases | 45 test cases across Login, Register, Forgot Password, Session, Accessibility |
+| Entry & Exit Criteria | 6 entry gates, 8 exit gates |
+| Defect Management | Severity SLAs, lifecycle, mandatory JIRA fields |
+| Risk Register | 8 risks with probability, impact, and mitigation |
+| RACI Matrix | Roles across QA, Dev, Security, DevOps, Product |
+| Schedule | 10 milestones from April 17 – May 12, 2026 |
+| Tools | 14 tools catalogued (Selenium, JMeter, ZAP, Axe, BrowserStack) |
+| Deliverables | 10 deliverables with owners and due dates |
+| Sign-off | Approval block for VP sign-off |
+
+---
+
+## Application Under Test
+
+| Detail | Value |
+|---|---|
+| Application | OpenCart Demo |
+| Login URL | `https://naveenautomationlabs.com/opencart/index.php?route=account/login` |
+| Auth Type | Session-based, cookie-driven |
+| Key Endpoints | `/account/login`, `/account/register`, `/account/forgotten` |
+
+---
+
+## Framework
+
+This project uses the **RICEPOT** prompt-engineering framework to generate comprehensive test coverage:
+
+| Letter | Stands For | Purpose |
+|---|---|---|
+| R | Role | Define the QA persona (e.g., Architect, 15+ YOE) |
+| I | Instructions | Specify what to analyse and generate |
+| C | Context | Application details, endpoints, auth mechanism |
+| E | Expected Output | Table format — TC_ID, Scenario_ID, Endpoint, etc. |
+| P | Persona | Meticulous, enterprise-focused, compliance-ready |
+| O | Output Format | DOCX for formal delivery; Markdown for traceability |
+| T | Tone | Formal, technical, compliance-ready |
+
+See [RICEPOT.md](RICEPOT.md) for the full framework reference.
+
+---
+
+## Reusing This for Other Projects
+
+1. Update the AUT details in `scripts/generate_test_plan.py` (URL, endpoints, module names).
+2. Replace the test case rows in sections 7.1–7.5 with your new scenarios.
+3. Update the RACI matrix, schedule, and deliverables sections.
+4. Run `python scripts/generate_test_plan.py` to regenerate the DOCX.
+
+See [RICEPOT.md](RICEPOT.md) for how to re-prompt an LLM to generate new test cases for a different module.
